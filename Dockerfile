@@ -11,12 +11,14 @@ RUN apt-get install -y --no-install-recommends libreoffice-writer
 
 RUN soffice --version
 
+WORKDIR /app
+
 COPY Gemfile Gemfile.lock word-to-markdown.gemspec ./
 COPY lib/word-to-markdown/version.rb ./lib/word-to-markdown/version.rb
 RUN bundle install
 
 COPY . .
 
-WORKDIR /app
-
-CMD echo "Nothing to run"
+WORKDIR /docs
+ENV BUNDLE_GEMFILE=/app/Gemfile
+ENTRYPOINT [ "bundle", "exec", "/app/bin/w2m" ]
